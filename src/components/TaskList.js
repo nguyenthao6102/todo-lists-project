@@ -5,6 +5,9 @@ export default class TaskList extends Component {
 	onUpdateStatus = () => {
 		this.props.onUpdateStatus();
 	};
+	onDelete = () => {
+		this.props.onDelete();
+	};
 	render() {
 		const { tasks } = this.props;
 		const elmTasks = tasks.map((task, index) => (
@@ -13,6 +16,7 @@ export default class TaskList extends Component {
 				task={task}
 				index={index}
 				onUpdateStatus={this.props.onUpdateStatus}
+				onDelete={this.props.onDelete}
 			/>
 		));
 		return (
