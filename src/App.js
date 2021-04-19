@@ -3,6 +3,7 @@ import Control from "./components/Control";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 import { v4 as uuidv4 } from "uuid";
+import _ from "lodash";
 
 import React, { Component } from "react";
 
@@ -19,6 +20,10 @@ export default class App extends Component {
 				status: -1,
 			},
 			keyword: "",
+			sort: {
+				by: "name",
+				value: 1,
+			},
 		};
 	}
 	componentDidMount() {
@@ -70,7 +75,11 @@ export default class App extends Component {
 	};
 	onUpdateStatus = (id) => {
 		const { tasks } = this.state;
-		const index = this.findIndex(id);
+		// const index = this.findIndex(id);
+		// use lodash
+		const index = _.findIndex(tasks, (task) => {
+			return task.id === id;
+		});
 		if (index !== -1) {
 			tasks[index].status = !tasks[index].status;
 			this.setState({
@@ -123,8 +132,23 @@ export default class App extends Component {
 			keyword: keyword,
 		});
 	};
+	onSort = (sort) => {
+		this.setState({
+			sort: {
+				by: sort.by,
+				value: sort.value,
+			},
+		});
+	};
 	render() {
-		let { tasks, isDisplayForm, taskEditing, filter, keyword } = this.state;
+		let {
+			tasks,
+			isDisplayForm,
+			taskEditing,
+			filter,
+			keyword,
+			sort,
+		} = this.state;
 		if (filter) {
 			if (filter.name) {
 				tasks = tasks.filter((task) => {
@@ -144,6 +168,19 @@ export default class App extends Component {
 				return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
 			});
 		}
+		if (sort.by === "name") {
+			tasks.sort((a, b) => {
+				if (a.name > b.name) return sort.value;
+				else if (a.name < b.name) return -sort.value;
+				else return 0;
+			});
+		} else {
+			tasks.sort((a, b) => {
+				if (a.status > b.status) return -sort.value;
+				else if (a.name < b.name) return sort.value;
+				else return 0;
+			});
+		}
 		const elmTaskForm = isDisplayForm ? (
 			<TaskForm
 				onCloseForm={this.onCloseForm}
@@ -153,6 +190,7 @@ export default class App extends Component {
 		) : (
 			""
 		);
+
 		return (
 			<div className="App">
 				<div className="container">
@@ -183,7 +221,7 @@ export default class App extends Component {
 								<span className="fa fa-plus mr-5"></span>Thêm Công Việc
 							</button>
 
-							<Control onSearch={this.onSearch} />
+							<Control onSearch={this.onSearch} onSort={this.onSort} />
 							<div className="row mt-15">
 								<div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 									<TaskList
