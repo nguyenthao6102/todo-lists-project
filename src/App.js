@@ -23,29 +23,7 @@ export default class App extends Component {
 			});
 		}
 	}
-	onGenerateData = () => {
-		const tasks = [
-			{
-				id: uuidv4(),
-				name: "Học lập trình",
-				status: true,
-			},
-			{
-				id: uuidv4(),
-				name: "Đi bơi",
-				status: false,
-			},
-			{
-				id: uuidv4(),
-				name: "Tập gym",
-				status: true,
-			},
-		];
-		this.setState({
-			tasks: tasks,
-		});
-		localStorage.setItem("tasks", JSON.stringify(tasks));
-	};
+
 	onToggleForm = () => {
 		this.setState({
 			isDisplayForm: !this.state.isDisplayForm,
@@ -68,6 +46,28 @@ export default class App extends Component {
 			tasks: tasks,
 		});
 		localStorage.setItem("tasks", JSON.stringify(tasks));
+	};
+	onUpdateStatus = (id) => {
+		const { tasks } = this.state;
+		const index = this.findIndex(id);
+		console.log(index);
+		if (index !== -1) {
+			tasks[index].status = !tasks[index].status;
+			this.setState({
+				tasks: tasks,
+			});
+			localStorage.setItem("tasks", JSON.stringify(tasks));
+		}
+	};
+	findIndex = (id) => {
+		const { tasks } = this.state;
+		var result = -1;
+		tasks.forEach((task, index) => {
+			if (task.id === id) {
+				result = index;
+			}
+		});
+		return result;
 	};
 	render() {
 		const { tasks, isDisplayForm } = this.state;
@@ -105,17 +105,14 @@ export default class App extends Component {
 							>
 								<span className="fa fa-plus mr-5"></span>Thêm Công Việc
 							</button>
-							<button
-								type="button"
-								className="btn btn-danger ml-5"
-								onClick={this.onGenerateData}
-							>
-								Generate Data
-							</button>
+
 							<Control />
 							<div className="row mt-15">
 								<div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-									<TaskList tasks={tasks} />
+									<TaskList
+										tasks={tasks}
+										onUpdateStatus={this.onUpdateStatus}
+									/>
 								</div>
 							</div>
 						</div>

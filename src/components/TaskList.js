@@ -2,10 +2,18 @@ import React, { Component } from "react";
 import TaskItem from "./TaskItem";
 
 export default class TaskList extends Component {
+	onUpdateStatus = () => {
+		this.props.onUpdateStatus();
+	};
 	render() {
 		const { tasks } = this.props;
 		const elmTasks = tasks.map((task, index) => (
-			<TaskItem key={task.id} task={task} index={index} />
+			<TaskItem
+				key={task.id}
+				task={task}
+				index={index}
+				onUpdateStatus={this.props.onUpdateStatus}
+			/>
 		));
 		return (
 			<table className="table table-bordered table-hover">
