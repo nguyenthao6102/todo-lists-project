@@ -5,9 +5,19 @@ export default class TaskForm extends Component {
 		super(props);
 
 		this.state = {
+			id: "",
 			name: "",
 			status: false,
 		};
+	}
+	componentDidMount() {
+		if (this.props.task) {
+			this.setState({
+				id: this.props.task.id,
+				name: this.props.task.name,
+				status: this.props.task.status,
+			});
+		}
 	}
 
 	onCloseForm = () => {
@@ -35,11 +45,13 @@ export default class TaskForm extends Component {
 		});
 	};
 	render() {
+		const { id } = this.state;
 		return (
 			<div className="panel panel-warning">
 				<div className="panel-heading">
 					<h3 className="panel-title">
-						Cập Nhật Công Việc
+						{id !== "" ? "Cập Nhật Công Việc" : "Thêm Công Việc"}
+
 						<span
 							className="fa fa-times-circle text-right"
 							onClick={this.onCloseForm}

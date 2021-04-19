@@ -13,6 +13,7 @@ export default class App extends Component {
 		this.state = {
 			tasks: [],
 			isDisplayForm: false,
+			taskEditing: null,
 		};
 	}
 	componentDidMount() {
@@ -34,16 +35,31 @@ export default class App extends Component {
 			isDisplayForm: false,
 		});
 	};
+	onShowForm = () => {
+		this.setState({
+			isDisplayForm: true,
+		});
+	};
 	onSubmit = (newItem) => {
 		const { tasks } = this.state;
-		const task = {
-			id: uuidv4(),
-			name: newItem.name,
-			status: newItem.status === "true" ? true : false,
-		};
-		tasks.push(task);
+		if (newItem.id === "") {
+			//Add new task
+			const task = {
+				id: uuidv4(),
+				name: newItem.name,
+				status: newItem.status === "true" ? true : false,
+			};
+
+			tasks.push(task);
+		} else {
+			//Edit task
+			const index = this.findIndex(newItem.id);
+			tasks[index] = newItem;
+		}
+
 		this.setState({
 			tasks: tasks,
+			taskEditing: null,
 		});
 		localStorage.setItem("tasks", JSON.stringify(tasks));
 	};
@@ -80,10 +96,23 @@ export default class App extends Component {
 		}
 		this.onCloseForm();
 	};
+	onUpdate = (id) => {
+		const { tasks } = this.state;
+		const index = this.findIndex(id);
+		const taskEditing = tasks[index];
+		this.setState({
+			taskEditing: taskEditing,
+		});
+		this.onShowForm();
+	};
 	render() {
-		const { tasks, isDisplayForm } = this.state;
+		const { tasks, isDisplayForm, taskEditing } = this.state;
 		const elmTaskForm = isDisplayForm ? (
-			<TaskForm onCloseForm={this.onCloseForm} onSubmit={this.onSubmit} />
+			<TaskForm
+				onCloseForm={this.onCloseForm}
+				onSubmit={this.onSubmit}
+				task={taskEditing}
+			/>
 		) : (
 			""
 		);
@@ -124,6 +153,7 @@ export default class App extends Component {
 										tasks={tasks}
 										onUpdateStatus={this.onUpdateStatus}
 										onDelete={this.onDelete}
+										onUpdate={this.onUpdate}
 									/>
 								</div>
 							</div>
