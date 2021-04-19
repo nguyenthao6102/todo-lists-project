@@ -18,6 +18,7 @@ export default class App extends Component {
 				name: "",
 				status: -1,
 			},
+			keyword: "",
 		};
 	}
 	componentDidMount() {
@@ -117,8 +118,13 @@ export default class App extends Component {
 			},
 		});
 	};
+	onSearch = (keyword) => {
+		this.setState({
+			keyword: keyword,
+		});
+	};
 	render() {
-		let { tasks, isDisplayForm, taskEditing, filter } = this.state;
+		let { tasks, isDisplayForm, taskEditing, filter, keyword } = this.state;
 		if (filter) {
 			if (filter.name) {
 				tasks = tasks.filter((task) => {
@@ -131,6 +137,11 @@ export default class App extends Component {
 				} else {
 					return task.status === (filter.status === 1 ? true : false);
 				}
+			});
+		}
+		if (keyword) {
+			tasks = tasks.filter((task) => {
+				return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
 			});
 		}
 		const elmTaskForm = isDisplayForm ? (
@@ -172,7 +183,7 @@ export default class App extends Component {
 								<span className="fa fa-plus mr-5"></span>Thêm Công Việc
 							</button>
 
-							<Control />
+							<Control onSearch={this.onSearch} />
 							<div className="row mt-15">
 								<div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 									<TaskList

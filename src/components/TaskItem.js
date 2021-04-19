@@ -14,7 +14,7 @@ export default class TaskItem extends Component {
 		const { task, index } = this.props;
 		return (
 			<tr>
-				<td>{index}</td>
+				<td>{index + 1}</td>
 				<td>{task.name}</td>
 				<td className="text-center">
 					<span
