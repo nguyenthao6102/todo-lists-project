@@ -1,8 +1,29 @@
 import React, { Component } from "react";
 
 export default class TaskForm extends Component {
-	onToggleForm = () => {
-		this.props.onToggleForm();
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			name: "",
+			status: false,
+		};
+	}
+
+	onCloseForm = () => {
+		this.props.onCloseForm();
+	};
+	handleChange = (e) => {
+		const target = e.target;
+		const name = target.name;
+		const value = target.value;
+		this.setState({
+			[name]: value,
+		});
+	};
+	handleSubmit = (e) => {
+		e.preventDefault();
+		this.props.onSubmit(this.state);
 	};
 	render() {
 		return (
@@ -12,18 +33,29 @@ export default class TaskForm extends Component {
 						Cập Nhật Công Việc
 						<span
 							className="fa fa-times-circle text-right"
-							onClick={this.onToggleForm}
+							onClick={this.onCloseForm}
 						/>
 					</h3>
 				</div>
 				<div className="panel-body">
-					<form>
+					<form onSubmit={this.handleSubmit}>
 						<div className="form-group">
 							<label>Tên :</label>
-							<input type="text" className="form-control" name="name" />
+							<input
+								type="text"
+								className="form-control"
+								name="name"
+								value={this.state.name}
+								onChange={this.handleChange}
+							/>
 						</div>
 						<label>Trạng Thái :</label>
-						<select className="form-control" name="status">
+						<select
+							className="form-control"
+							name="status"
+							value={this.state.status}
+							onChange={this.handleChange}
+						>
 							<option value={true}>Kích Hoạt</option>
 							<option value={false}>Ẩn</option>
 						</select>

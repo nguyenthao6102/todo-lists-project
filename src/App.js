@@ -51,10 +51,28 @@ export default class App extends Component {
 			isDisplayForm: !this.state.isDisplayForm,
 		});
 	};
+	onCloseForm = () => {
+		this.setState({
+			isDisplayForm: false,
+		});
+	};
+	onSubmit = (newItem) => {
+		const { tasks } = this.state;
+		const task = {
+			id: uuidv4(),
+			name: newItem.name,
+			status: newItem.status === "true" ? true : false,
+		};
+		tasks.push(task);
+		this.setState({
+			tasks: tasks,
+		});
+		localStorage.setItem("tasks", JSON.stringify(tasks));
+	};
 	render() {
 		const { tasks, isDisplayForm } = this.state;
 		const elmTaskForm = isDisplayForm ? (
-			<TaskForm onToggleForm={this.onToggleForm} />
+			<TaskForm onCloseForm={this.onCloseForm} onSubmit={this.onSubmit} />
 		) : (
 			""
 		);
